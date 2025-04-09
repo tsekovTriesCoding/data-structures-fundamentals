@@ -159,12 +159,6 @@ public class ArrayDeque<E> implements Deque<E> {
         return toRemove;
     }
 
-    private void ensureIndex(int index) {
-        if (index < this.head || index > this.tail) {
-            throw new IndexOutOfBoundsException();
-        }
-    }
-
     @Override
     public E remove(Object object) {
         if (this.isEmpty()) {
@@ -281,5 +275,11 @@ public class ArrayDeque<E> implements Deque<E> {
     @SuppressWarnings("unchecked")
     private E getAt(int index) {
         return (E) this.elements[index];
+    }
+
+    private void ensureIndex(int index) {
+        if (index < this.head || index > this.tail) {
+            throw new IndexOutOfBoundsException();
+        }
     }
 }
