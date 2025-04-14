@@ -1,15 +1,18 @@
 package solutions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BinaryTree {
-    private int value;
+    private int key;
     private BinaryTree left;
     private BinaryTree right;
 
     public BinaryTree(int key, BinaryTree first, BinaryTree second) {
-        this.value = key;
+        this.key = key;
         left = first;
         right = second;
     }
@@ -43,11 +46,11 @@ public class BinaryTree {
             return false;
         }
 
-        if (binaryTree.value == element) {
+        if (binaryTree.key == element) {
             return true;
         }
 
-        currentPath.add(binaryTree.value);
+        currentPath.add(binaryTree.key);
 
         boolean leftResult = findNodePath(binaryTree.left, element, currentPath);
         if (leftResult) {
@@ -59,11 +62,36 @@ public class BinaryTree {
             return true;
         }
 
-        currentPath.remove(Integer.valueOf(binaryTree.value));
+        currentPath.remove(Integer.valueOf(binaryTree.key));
         return false;
     }
 
     public List<Integer> topView() {
-        return null;
+        Map<Integer, Pair<Integer, Integer>> offsetToValueLevel = new HashMap<>();
+        Map<Integer, Pair<Integer, Integer>> example = new HashMap<>();
+
+        traverseTree(this, 0, 1, offsetToValueLevel);
+
+       return offsetToValueLevel
+                .values()
+                .stream()
+                .map(Pair::getKey)
+                .collect(Collectors.toList());
     }
+
+    private void traverseTree(BinaryTree binaryTree, int offset, int level, Map<Integer, Pair<Integer, Integer>> offsetToValueLevel) {
+        if (binaryTree == null) {
+            return;
+        }
+
+        Pair<Integer, Integer> currentValueLevel = offsetToValueLevel.get(offset);
+
+        if (currentValueLevel == null || level < currentValueLevel.getValue()) {
+            offsetToValueLevel.put(offset, new Pair<>(binaryTree.key, level));
+        }
+
+        traverseTree(binaryTree.left, offset - 1, level + 1, offsetToValueLevel);
+        traverseTree(binaryTree.right, offset + 1, level + 1, offsetToValueLevel);
+    }
+
 }
